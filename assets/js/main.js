@@ -3,24 +3,46 @@
 	html5up.net | @ajlkn
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
-function addElement() {
 
-    // create a new div element
-    //const newDiv = document.createElement("div");
-    const newDiv = document.getElementsByClassName("tiles");
+function displayPosts(id) {
+    //find post info element
+    const newDiv = document.getElementById("posts");
 
-    // and give it some content
-    const newContent = document.createTextNode("test!");
+    //clear if there is something there
+    removeAllChildNodes(newDiv);
 
-    // add the text node to the newly created div
-    newDiv.appendChild(newContent);
+    //get posts and populate section
+    (async() => {
+        const res = await fetch('https://jsonplaceholder.typicode.com/posts?userId=' + id, {
+            headers: { Accept: 'application/json' },
+        });
+        const json = await res.json();
+        Object.entries(json).forEach(([key, value]) => {
+            //console.log(`${key}: ${value.name}`);
+            addPost(value.title, value.body);
+        });
+    })();
 
-    // add the newly created element and its content into the DOM
-    const currentDiv = document.getElementById('tiles');
-    //document.body.insertBefore(newDiv, currentDiv);
 }
 
+function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
 
+function addPost(title, body) {
+    //find post info element
+    const newDiv = document.getElementById("posts");
+
+    // create new content and give it content
+    const newContent = document.createElement("article");
+    newContent.className = "style" + newDiv.children.length % 6; //there are six styles for the tiles, hence mod 6
+    newContent.innerHTML = '<span class="image"><img src="images/pic02.jpg" alt="" /></span><a  "><h2>' + title + '</h2><div class="content"><p>' + body + '</p></div></a>';
+
+    // add new element to reference eleement
+    newDiv.appendChild(newContent);
+}
 (function($) {
 
     var $window = $(window),
@@ -44,41 +66,30 @@ function addElement() {
     });
 
     $window.on('load', function() {
-        //get users
-
-        // const res = fetch('https://jsonplaceholder.typicode.com/posts')
-        //     .then((response) => response.json())
-        //     .then((json) => console.log(json));
-        // const json = res.json();
-        // Object.entries(json).forEach(([key, value]) => {
-        //     console.log(`${key}: ${value}`);
-        // });
-
+        //get users and populate page
         (async() => {
             const res = await fetch('https://jsonplaceholder.typicode.com/users', {
                 headers: { Accept: 'application/json' },
             });
             const json = await res.json();
             Object.entries(json).forEach(([key, value]) => {
-                console.log(`${key}:`);
-                addElement();
+                console.log(`${key}: ${value.name}`);
+                addElement(value.name, value.id);
             });
         })();
 
 
-        function addElement() {
-            // create a new div element
-            const newDiv = document.createElement("div");
+        function addElement(name, idNum) {
+            // get reference to element
+            const newDiv = document.getElementById("test");
 
-            // and give it some content
-            const newContent = document.createTextNode("Hi there and greetings!");
+            // create new content and give it content
+            const newContent = document.createElement("article");
+            newContent.className = "style" + newDiv.children.length % 6; //there are six styles for the tiles, hence mod 6
+            newContent.innerHTML = '<span class="image"><img src="images/pic02.jpg" alt="" /></span><a  onclick="displayPosts(' + idNum + ')"><h2>' + name + '</h2><div class="content"><p>Sed nisl arcu euismod sit amet nisi lorem etiam dolor veroeros et feugiat.</p></div></a>';
 
-            // add the text node to the newly created div
+            // add new element to reference eleement
             newDiv.appendChild(newContent);
-
-            // add the newly created element and its content into the DOM
-            const currentDiv = document.getElementById("div1");
-            document.body.insertBefore(newDiv, currentDiv);
         }
     });
 
