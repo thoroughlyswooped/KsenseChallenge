@@ -74,19 +74,19 @@ function addPost(title, body) {
             const json = await res.json();
             Object.entries(json).forEach(([key, value]) => {
                 console.log(`${key}: ${value.name}`);
-                addElement(value.name, value.id);
+                addElement(value.username, value.id, value.website);
             });
         })();
 
 
-        function addElement(name, idNum) {
+        function addElement(name, idNum, website) {
             // get reference to element
             const newDiv = document.getElementById("test");
 
             // create new content and give it content
             const newContent = document.createElement("article");
             newContent.className = "style" + newDiv.children.length % 6; //there are six styles for the tiles, hence mod 6
-            newContent.innerHTML = '<span class="image"><img src="images/pic02.jpg" alt="" /></span><a  onclick="displayPosts(' + idNum + ')"><h2>' + name + '</h2><div class="content"><p>Sed nisl arcu euismod sit amet nisi lorem etiam dolor veroeros et feugiat.</p></div></a>';
+            newContent.innerHTML = '<span class="image"><img src="images/pic02.jpg" alt="" /></span><a  onclick="displayPosts(' + idNum + ')"><h2>' + name + '</h2><div class="content"><p>' + website + '</p></div></a>';
 
             // add new element to reference eleement
             newDiv.appendChild(newContent);
